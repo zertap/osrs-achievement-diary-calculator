@@ -9,7 +9,7 @@ error_reporting(E_ALL);
 $hiscoreURL = 'http://services.runescape.com/m=hiscore_oldschool/index_lite.ws?player=';
 
 $diary = array();
-$diary['all'] = json_decode(file_get_contents('res/diary_karamja.json'), true);
+$diary['all'] = json_decode(file_get_contents('res/diary_all.json'), true);
 // $diary['karamja'] = json_decode(file_get_contents('res/diary_karamja.json'));
 // $diary['ardougne'] = json_decode(file_get_contents('res/diary_ardougne.json'));
 // $diary['falador'] = json_decode(file_get_contents('res/diary_falador.json'));
@@ -27,12 +27,12 @@ $diff = $_GET['diff'] or die('diff not specified.');
 $request_diary = $_GET['diary'];
 if (!array_key_exists($request_diary, $diary)) { die("Requested diary does not exist.");}
 
-$api_stats = file_get_contents($hiscoreURL.$player); // WHY DOES THIS RETURN EMPTY FUCK
-$api_stats = explode("\n", $api_stats);
+$api_stats = file_get_contents($hiscoreURL.$player);
+$api_stats = explode(PHP_EOL, $api_stats);
 
 
 # TESTING
-// echo($api_stats);
+// print_r($api_stats);
 // echo($hiscoreURL.$player);
 
 #####
@@ -46,7 +46,6 @@ foreach (explode(',', $stat_names) as $skill) {
 	$stats[$skill]['xp'] = explode(',', $api_stats[$i])[2]; // Get i from api_stats and separate the rank,level,xp, pick xp ( third item in the array, [2] )
 	$i++;
 }
-
 foreach ($diary[$request_diary]['diary']['diff'][$diff]['skills'] as $skill => $lvl) {
 	$lvls_left = ($lvl - $stats[$skill]['lvl']);
 	if ($lvls_left > 0) {
